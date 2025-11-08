@@ -35,6 +35,7 @@ class KategoriSampahList extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
+                  // ignore: deprecated_member_use
                   backgroundColor: kategori.color.withOpacity(0.2),
                   child: Icon(kategori.icon, color: kategori.color, size: 30),
                 ),
