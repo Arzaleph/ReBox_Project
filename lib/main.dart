@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Atur halaman utama ke BerandaScreen
-      home: const BerandaScreen(),
+      home: const MainScreen(),
 
       // Atau, jika menggunakan named routes:
       // initialRoute: '/',

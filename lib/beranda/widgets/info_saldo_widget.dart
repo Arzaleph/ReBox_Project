@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+// Import halaman tujuan dari folder pesanan/
+import 'package:project_pti/pesanan/screens/jual_sampah_screen.dart';
+
 class InfoSaldoWidget extends StatelessWidget {
   final String namaPengguna;
   final double saldo;
@@ -16,13 +19,13 @@ class InfoSaldoWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary, // Menggunakan warna primer
+        color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Bagian Saldo
+          // Bagian Saldo (TIDAK ADA PERUBAHAN)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -46,10 +49,17 @@ class InfoSaldoWidget extends StatelessWidget {
             ],
           ),
 
-          // Tombol CTA
+          // Tombol CTA (PERUBAHAN ADA DI FUNGSI onPressed)
           ElevatedButton.icon(
             onPressed: () {
-              // Navigasi ke halaman "Jual Sampah" di fitur Pesanan
+              // --- LOGIKA NAVIGASI DITAMBAHKAN DI SINI ---
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const JualSampahScreen(),
+                ),
+              );
+              // ------------------------------------------
             },
             icon: const Icon(Icons.add_shopping_cart, color: Colors.green),
             label: const Text(
@@ -57,7 +67,7 @@ class InfoSaldoWidget extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.yellow, // Warna CTA menarik
+              backgroundColor: Colors.yellow,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
           ),

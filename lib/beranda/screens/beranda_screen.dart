@@ -1,86 +1,163 @@
 import 'package:flutter/material.dart';
 
-// Import Custom Widgets dari folder widgets/ yang akan kita buat
+// Import Widgets dari folder beranda/
 import 'package:project_pti/beranda/widgets/beranda_appbar.dart';
 import 'package:project_pti/beranda/widgets/info_saldo_widget.dart';
 import 'package:project_pti/beranda/widgets/kategori_sampah_list.dart';
 import 'package:project_pti/beranda/widgets/daftar_harga_terbaru.dart';
 
-// Catatan: Jika menggunakan State Management (Bloc/Cubit/Controller),
-// Anda akan membungkus widget ini dengan Provider/BlocBuilder.
-// Untuk contoh ini, kita asumsikan stateless dan menggunakan data dummy.
+// Import Screens dari fitur lain
+import 'package:project_pti/cari/screens/cari_screen.dart';
+import 'package:project_pti/notifikasi/screens/notifikasi_screen.dart';
+import 'package:project_pti/pesanan/screens/pesanan_screen.dart';
+import 'package:project_pti/profil/screens/profil_screen.dart';
+// --- TAMBAH IMPORT PENGATURAN ---
+import 'package:project_pti/pengaturan/screens/pengaturan_screen.dart';
 
-class BerandaScreen extends StatelessWidget {
-  const BerandaScreen({super.key});
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
+
+  // 1. Daftar halaman yang akan ditampilkan di Bottom Bar
+  static final List<Widget> _widgetOptions = <Widget>[
+    const BerandaContent(),
+    const CariScreen(),
+    const PesananScreen(),
+    const NotifikasiScreen(),
+    const ProfilScreen(),
+  ];
+
+  // 2. Daftar judul untuk App Bar (kecuali Beranda)
+  static const List<String> _pageTitles = <String>[
+    'Beranda',
+    'Pencarian',
+    'Riwayat Pesanan',
+    'Pemberitahuan',
+    'Profil Saya',
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // 1. App Bar Kustom (berisi Notifikasi & Lokasi)
-      appBar: const BerandaAppBar(),
 
-      // 2. Konten Utama Halaman
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // Widget Saldo & Tombol Utama (CTA) "Jual Sampah"
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: InfoSaldoWidget(
-                namaPengguna: 'Arza Restu Arjuna',
-                saldo: 145.000,
+    // --- LOGIKA KONDISIONAL UNTUK ACTIONS (TOMBOL KANAN ATAS) ---
+    List<Widget> appBarActions = [];
+
+    // Jika Tab Profil (Index 4) aktif, tambahkan tombol Pengaturan
+    if (_selectedIndex == 4) {
+      appBarActions = [
+        IconButton(
+          icon: const Icon(Icons.settings, color: Colors.white), // Ikon Pengaturan
+          onPressed: () {
+            // Navigasi ke halaman Pengaturan
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PengaturanScreen(),
               ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Judul Bagian Kategori
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Text(
-                'Jual / Beli Sampah Apa Hari Ini?',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // Widget Daftar Kategori Horizontal
-            const KategoriSampahList(),
-
-            const SizedBox(height: 30),
-
-            // Judul Bagian Harga/Listing Terbaru
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Text(
-                'Harga Beli Terbaru (Per Kg)',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // Widget Daftar Harga/Item Terbaru (List vertikal)
-            const DaftarHargaTerbaru(),
-          ],
+            );
+          },
         ),
+      ];
+    }
+    // -------------------------------------------------------------------------
+
+    return Scaffold(
+      // AppBar berubah sesuai tab
+      appBar: _selectedIndex == 0
+          ? const BerandaAppBar() // Tab Beranda: Gunakan AppBar Kustom
+          : AppBar( // Tab Lain: Gunakan AppBar Standar
+        title: Text(
+          _pageTitles[_selectedIndex],
+          style: const TextStyle(color: Colors.white), // Set warna teks putih agar kontras
+        ),
+        automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        // PASANG ACTIONS KONDISIONAL
+        actions: appBarActions,
       ),
 
-      // 3. Navigasi Bawah (Opsional, tapi umum di aplikasi modern)
+      // Tampilkan konten halaman yang sesuai dengan _selectedIndex
+      body: _widgetOptions.elementAt(_selectedIndex),
+
+      // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Cari'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Pesanan'),
+          BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Pesanan'),
           BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifikasi'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
         ],
-        currentIndex: 0,
-        onTap: (index) {
-          // Logika navigasi ke fitur-fitur lain (Cari, Pesanan, Notifikasi, Profil)
-        },
+        currentIndex: _selectedIndex,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped, // Logika perpindahan tab
+      ),
+    );
+  }
+}
+
+
+// --- KONTEN HALAMAN BERANDA ASLI (DIJADIKAN ISI TAB 0) ---
+// (Tidak ada perubahan di sini kecuali nama pengguna)
+class BerandaContent extends StatelessWidget {
+  const BerandaContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: InfoSaldoWidget(
+              namaPengguna: 'Arza Restu Arjuna',
+              saldo: 145000,
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text(
+              'Jual / Beli Sampah Apa Hari Ini?',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          const KategoriSampahList(),
+
+          const SizedBox(height: 30),
+
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text(
+              'Harga Beli Terbaru (Per Kg)',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          const DaftarHargaTerbaru(),
+        ],
       ),
     );
   }
