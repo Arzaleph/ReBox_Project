@@ -13,6 +13,7 @@ import 'package:project_pti/pesanan/screens/pesanan_screen.dart';
 import 'package:project_pti/profil/screens/profil_screen.dart';
 // --- TAMBAH IMPORT PENGATURAN ---
 import 'package:project_pti/pengaturan/screens/pengaturan_screen.dart';
+import 'package:project_pti/notifikasi/notifications_service.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -92,20 +93,54 @@ class _MainScreenState extends State<MainScreen> {
       // Tampilkan konten halaman yang sesuai dengan _selectedIndex
       body: _widgetOptions.elementAt(_selectedIndex),
 
-      // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Cari'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Pesanan'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifikasi'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped, // Logika perpindahan tab
+      // Bottom Navigation Bar with badge for unread notifications
+      bottomNavigationBar: AnimatedBuilder(
+        animation: NotificationsService.instance,
+        builder: (context, _) {
+          final unread = NotificationsService.instance.notifications.where((n) => !n.read).length;
+          return BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            items: [
+              const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
+              const BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Cari'),
+              const BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Pesanan'),
+              BottomNavigationBarItem(
+                icon: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Icon(Icons.notifications),
+                    if (unread > 0)
+                      Positioned(
+                        right: -6,
+                        top: -4,
+                        child: Container(
+                          padding: const EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                          child: Center(
+                            child: Text(
+                              unread > 99 ? '99+' : unread.toString(),
+                              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                label: 'Notifikasi',
+              ),
+              const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Theme.of(context).colorScheme.primary,
+            unselectedItemColor: Colors.grey,
+            onTap: _onItemTapped, // Logika perpindahan tab
+          );
+        },
       ),
     );
   }
