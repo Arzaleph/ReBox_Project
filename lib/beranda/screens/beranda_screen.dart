@@ -29,8 +29,8 @@ class BerandaScreen extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: InfoSaldoWidget(
-                namaPengguna: 'Adi Wijaya',
-                saldo: 45000,
+                namaPengguna: 'Arza Restu Arjuna',
+                saldo: 145.000,
               ),
             ),
 
