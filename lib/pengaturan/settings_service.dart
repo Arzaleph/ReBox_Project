@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project_pti/core/api.dart';
 
 class SettingsService extends ChangeNotifier {
   SettingsService._internal();
@@ -10,17 +11,24 @@ class SettingsService extends ChangeNotifier {
 
   bool _isDarkMode = false;
   bool _notificationsEnabled = true;
+  String? _apiBaseUrl;
 
   bool get isDarkMode => _isDarkMode;
   bool get notificationsEnabled => _notificationsEnabled;
 
   ThemeMode get themeMode => _isDarkMode ? ThemeMode.dark : ThemeMode.light;
+  String? get apiBaseUrl => _apiBaseUrl;
 
   /// Initialize and load saved preferences. Call once before runApp if possible.
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     _isDarkMode = _prefs.getBool('isDarkMode') ?? false;
     _notificationsEnabled = _prefs.getBool('notificationsEnabled') ?? true;
+    _apiBaseUrl = _prefs.getString('api_base_url');
+    // If Api URL was set in prefs, update ApiConfig
+    if (_apiBaseUrl != null && _apiBaseUrl!.isNotEmpty) {
+      ApiConfig.setBaseUrl(_apiBaseUrl!);
+    }
     notifyListeners();
   }
 
@@ -33,6 +41,17 @@ class SettingsService extends ChangeNotifier {
   Future<void> setNotificationsEnabled(bool value) async {
     _notificationsEnabled = value;
     await _prefs.setBool('notificationsEnabled', value);
+    notifyListeners();
+  }
+
+  Future<void> setApiBaseUrl(String? url) async {
+    _apiBaseUrl = url;
+    if (url == null || url.isEmpty) {
+      await _prefs.remove('api_base_url');
+    } else {
+      await _prefs.setString('api_base_url', url);
+    }
+    ApiConfig.setBaseUrl(url ?? '');
     notifyListeners();
   }
 

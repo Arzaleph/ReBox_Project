@@ -107,6 +107,37 @@ class _PengaturanScreenState extends State<PengaturanScreen> {
                 title: const Text('Versi Aplikasi'),
                 subtitle: const Text('1.0.0'),
               ),
+              const SizedBox(height: 8),
+              ListTile(
+                leading: const Icon(Icons.cloud),
+                title: const Text('Backend API URL'),
+                subtitle: Text(settings.apiBaseUrl ?? 'Tidak disetel (menggunakan data lokal)'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () async {
+                    final controller = TextEditingController(text: settings.apiBaseUrl ?? '');
+                    final saved = await showDialog<bool>(
+                      context: context,
+                      builder: (c) => AlertDialog(
+                        title: const Text('Atur Backend API URL'),
+                        content: TextField(
+                          controller: controller,
+                          decoration: const InputDecoration(hintText: 'https://api.example.com'),
+                        ),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.of(c).pop(false), child: const Text('Batal')),
+                          TextButton(onPressed: () => Navigator.of(c).pop(true), child: const Text('Simpan')),
+                        ],
+                      ),
+                    );
+                    if (saved == true) {
+                      await settings.setApiBaseUrl(controller.text.trim());
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('API URL disimpan')));
+                    }
+                  },
+                ),
+              ),
             ],
           );
         },
