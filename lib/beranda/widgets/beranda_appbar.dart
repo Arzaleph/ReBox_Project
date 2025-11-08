@@ -10,7 +10,7 @@ class BerandaAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text(
-        'PROJECT PTI',
+        'Recycle Box',
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       centerTitle: false,
