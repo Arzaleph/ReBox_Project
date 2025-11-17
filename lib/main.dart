@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_pti/beranda/screens/beranda_screen.dart'; // Impor layar fitur utama
+import 'package:project_pti/auth/screens/splash_screen.dart';
 import 'package:project_pti/pengaturan/settings_service.dart';
 
 void main() async {
@@ -17,20 +17,20 @@ class MyApp extends StatelessWidget {
       animation: SettingsService.instance,
       builder: (context, _) {
         return MaterialApp(
-          title: 'Recycle Box',
+          title: 'ReBox',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
             useMaterial3: true,
             brightness: Brightness.light,
           ),
           darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent, brightness: Brightness.dark),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
             useMaterial3: true,
             brightness: Brightness.dark,
           ),
           themeMode: SettingsService.instance.themeMode,
-          home: const MainScreen(),
-
+          home: const SplashScreen(),
+          debugShowCheckedModeBanner: false,
         );
       },
     );
