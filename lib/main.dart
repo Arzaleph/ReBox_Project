@@ -17,19 +17,20 @@ class MyApp extends StatelessWidget {
       animation: SettingsService.instance,
       builder: (context, _) {
         return MaterialApp(
-          title: 'Project PTI',
+          title: 'Recycle Box',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
             useMaterial3: true,
             brightness: Brightness.light,
           ),
           darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent, brightness: Brightness.dark),
             useMaterial3: true,
             brightness: Brightness.dark,
           ),
           themeMode: SettingsService.instance.themeMode,
           home: const MainScreen(),
+
         );
       },
     );
