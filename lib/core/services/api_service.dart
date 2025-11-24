@@ -4,8 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   // Ganti dengan URL Laravel Anda
-  // Untuk Physical Device gunakan IP komputer (HP & laptop harus 1 WiFi)
-  static const String baseUrl = 'http://192.168.1.28:8000/api';
+  // UNTUK ANDROID EMULATOR - GUNAKAN 10.0.2.2
+  static const String baseUrl = 'http://10.0.2.2:8000/api';
+  
+  // Untuk Physical Device (HP) gunakan: 'http://10.4.5.19:8000/api'
+  // Untuk Emulator gunakan: 'http://10.0.2.2:8000/api' ✅ CURRENT
   
   static final ApiService _instance = ApiService._internal();
   factory ApiService() => _instance;
@@ -128,6 +131,11 @@ class ApiService {
         errors: data['errors'],
       );
     }
+  }
+
+  // Parse JSON response string (public helper for multipart requests)
+  Map<String, dynamic> parseResponse(String responseBody) {
+    return jsonDecode(responseBody);
   }
 }
 

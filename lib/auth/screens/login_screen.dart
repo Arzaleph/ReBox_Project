@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final response = await _authService.login(
+      await _authService.login(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
