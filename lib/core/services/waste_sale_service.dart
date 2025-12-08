@@ -59,7 +59,7 @@ class WasteSaleService {
     File? photo,
   }) async {
     try {
-      final token = await _authService.getToken();
+      final token = await _getToken();
       if (token == null) {
         throw Exception('Not authenticated');
       }
