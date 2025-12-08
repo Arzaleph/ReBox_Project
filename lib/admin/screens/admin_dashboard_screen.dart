@@ -3,6 +3,10 @@ import '../../core/services/admin_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/models/user.dart';
 import '../../auth/screens/login_screen.dart';
+import 'categories/manage_categories_screen.dart';
+import 'transactions/all_transactions_screen.dart';
+import 'payments/pengepul_payments_screen.dart';
+import 'notifications/broadcast_notification_screen.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -218,8 +222,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     Icons.category,
                     Colors.blue,
                     () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Fitur Kelola Kategori - Coming Soon')),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ManageCategoriesScreen(),
+                        ),
                       );
                     },
                   ),
@@ -230,8 +237,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     Icons.history,
                     Colors.purple,
                     () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Fitur Riwayat Transaksi - Coming Soon')),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AllTransactionsScreen(),
+                        ),
                       );
                     },
                   ),
@@ -242,8 +252,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     Icons.payment,
                     Colors.green,
                     () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Fitur Pembayaran Pengepul - Coming Soon')),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PengepulPaymentsScreen(),
+                        ),
                       );
                     },
                   ),
@@ -254,8 +267,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     Icons.notifications_active,
                     Colors.orange,
                     () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Fitur Broadcast Notifikasi - Coming Soon')),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BroadcastNotificationScreen(),
+                        ),
                       );
                     },
                   ),

@@ -4,6 +4,8 @@ import '../../core/services/auth_service.dart';
 import '../../core/models/user.dart';
 import '../../core/models/box.dart';
 import '../../auth/screens/login_screen.dart';
+import 'transactions/create_transaction_screen.dart';
+import 'transactions/my_transactions_screen.dart';
 
 class PengepulDashboardScreen extends StatefulWidget {
   const PengepulDashboardScreen({super.key});
@@ -326,22 +328,25 @@ class _PengepulDashboardScreenState extends State<PengepulDashboardScreen> {
   }
 
   Widget _buildMyTransactions() {
-    return const Card(
-      child: Padding(
-        padding: EdgeInsets.all(32),
-        child: Center(
-          child: Column(
-            children: [
-              Icon(Icons.receipt_long, size: 64, color: Colors.grey),
-              SizedBox(height: 16),
-              Text(
-                'Fitur Transaksi - Coming Soon',
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-              ),
-            ],
+    return Column(
+      children: [
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.receipt_long, color: Colors.green),
+            title: const Text('Lihat Semua Transaksi'),
+            subtitle: const Text('Riwayat transaksi lengkap'),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyTransactionsScreen(),
+                ),
+              ).then((_) => _loadData());
+            },
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -425,11 +430,17 @@ class _PengepulDashboardScreenState extends State<PengepulDashboardScreen> {
               
               // Action Button
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Fitur Buat Transaksi - Coming Soon')),
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateTransactionScreen(box: box),
+                    ),
                   );
+                  if (result == true) {
+                    _loadData(); // Refresh data if transaction was created
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
