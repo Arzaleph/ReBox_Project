@@ -105,13 +105,33 @@ class AdminService {
 
   // ================== MELIHAT RIWAYAT PESANAN ==================
 
-  Future<List<Transaction>> getAllTransactions() async {
-    final response = await _apiService.get('/admin/transactions');
+  Future<Map<String, dynamic>> getAllTransactions({int page = 1}) async {
+    final response = await _apiService.get('/admin/transactions?page=$page');
 
     if (response['success']) {
       final data = response['data'];
-      final List transactionsJson = data['data'] ?? data;
-      return transactionsJson.map((json) => Transaction.fromJson(json)).toList();
+      
+      // Handle paginated response from Laravel
+      if (data is Map<String, dynamic> && data.containsKey('data')) {
+        final List transactionsJson = data['data'];
+        final transactions = transactionsJson.map((json) => Transaction.fromJson(json)).toList();
+        
+        return {
+          'transactions': transactions,
+          'current_page': data['current_page'] ?? 1,
+          'last_page': data['last_page'] ?? 1,
+          'total': data['total'] ?? 0,
+        };
+      } else {
+        // Fallback for non-paginated response
+        final List transactionsJson = data is List ? data : [];
+        return {
+          'transactions': transactionsJson.map((json) => Transaction.fromJson(json)).toList(),
+          'current_page': 1,
+          'last_page': 1,
+          'total': transactionsJson.length,
+        };
+      }
     } else {
       throw Exception(response['message'] ?? 'Gagal memuat transaksi');
     }
