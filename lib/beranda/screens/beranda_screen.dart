@@ -14,6 +14,7 @@ import 'package:project_pti/profil/screens/profil_screen.dart';
 // --- TAMBAH IMPORT PENGATURAN ---
 import 'package:project_pti/pengaturan/screens/pengaturan_screen.dart';
 import 'package:project_pti/notifikasi/notifications_service.dart';
+import 'package:project_pti/pesanan/screens/waste_sale_list_screen.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -164,6 +165,78 @@ class BerandaContent extends StatelessWidget {
             child: InfoSaldoWidget(
               namaPengguna: 'Arza Restu Arjuna',
               saldo: 145000,
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // TOMBOL JUAL SAMPAH
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Card(
+              elevation: 4,
+              color: Colors.green,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WasteSaleListScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.recycling,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Jual Sampah',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Tukar sampah jadi uang',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
 

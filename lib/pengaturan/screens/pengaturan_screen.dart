@@ -4,6 +4,8 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:project_pti/pengaturan/settings_service.dart';
+import 'package:project_pti/auth/screens/login_screen.dart';
+import 'package:project_pti/profil/profile_service.dart';
 
 class PengaturanScreen extends StatefulWidget {
   const PengaturanScreen({super.key});
@@ -89,13 +91,38 @@ class _PengaturanScreenState extends State<PengaturanScreen> {
                 title: const Text('Logout'),
                 subtitle: const Text('Keluar dari akun Anda'),
                 onTap: () async {
-                  await SettingsService.instance.logout();
-                  if (!mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Anda telah logout')),
+                  // Konfirmasi logout
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Konfirmasi Logout'),
+                      content: const Text('Apakah Anda yakin ingin keluar dari akun?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Batal'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('Logout', style: TextStyle(color: Colors.red)),
+                        ),
+                      ],
+                    ),
                   );
-                  // Navigasi kembali ke halaman awal (bersihkan stack sampai root)
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+
+                  if (confirm != true) return;
+
+                  // Clear semua data user
+                  await ProfileService.instance.clearProfile();
+                  await SettingsService.instance.logout();
+                  
+                  if (!mounted) return;
+                  
+                  // Navigate ke login screen dan hapus semua route sebelumnya
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    (route) => false,
+                  );
                 },
               ),
 

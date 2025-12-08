@@ -66,7 +66,14 @@ class SettingsService extends ChangeNotifier {
 
   /// Logout helper: remove auth token and other user-specific keys.
   Future<void> logout() async {
-    // Remove token key if exists. Adjust key name if your project uses different key.
+    // Remove auth token
     await _prefs.remove('auth_token');
+    // Remove user-specific data
+    await _prefs.remove('user_id');
+    await _prefs.remove('user_email');
+    await _prefs.remove('user_name');
+    await _prefs.remove('user_role');
+    // Clear cached data if needed
+    await clearCache();
   }
 }

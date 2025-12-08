@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_pti/profil/profile_service.dart';
 import 'package:project_pti/pengaturan/settings_service.dart';
+import 'package:project_pti/auth/screens/login_screen.dart';
 import 'package:project_pti/profil/widgets/profile_header.dart';
 import 'package:project_pti/core/api.dart';
 
@@ -75,14 +76,39 @@ class _ProfilScreenState extends State<ProfilScreen> {
   }
 
   Future<void> _logout() async {
+    // Konfirmasi logout
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Konfirmasi Logout'),
+        content: const Text('Apakah Anda yakin ingin keluar dari akun?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
     setState(() => _loading = true);
     // clear profile and auth token
     await ProfileService.instance.clearProfile();
     await SettingsService.instance.logout();
     if (!mounted) return;
     setState(() => _loading = false);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Anda telah logout')));
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    
+    // Navigate ke login screen dan hapus semua route sebelumnya
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
   }
 
   @override
