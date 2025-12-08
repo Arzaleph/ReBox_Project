@@ -54,6 +54,23 @@ class _PengepulDashboardScreenState extends State<PengepulDashboardScreen> {
     }
   }
 
+  String _formatCurrency(dynamic value) {
+    if (value == null) return 'Rp 0';
+    if (value is num) return 'Rp ${value.toStringAsFixed(0)}';
+    if (value is String) {
+      final parsed = double.tryParse(value);
+      return 'Rp ${parsed?.toStringAsFixed(0) ?? '0'}';
+    }
+    return 'Rp 0';
+  }
+
+  String _formatNumber(dynamic value) {
+    if (value == null) return '0';
+    if (value is num) return value.toString();
+    if (value is String) return value;
+    return '0';
+  }
+
   Future<void> _logout() async {
     try {
       await _authService.logout();
@@ -165,7 +182,7 @@ class _PengepulDashboardScreenState extends State<PengepulDashboardScreen> {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        'Rp ${(_dashboardData!['current_balance'] ?? 0).toStringAsFixed(0)}',
+                                        _formatCurrency(_dashboardData!['current_balance']),
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 24,
@@ -252,7 +269,7 @@ class _PengepulDashboardScreenState extends State<PengepulDashboardScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          value is num ? (value is int ? value.toString() : 'Rp ${value.toStringAsFixed(0)}') : value.toString(),
+          label.contains('Total Earnings') ? _formatCurrency(value) : _formatNumber(value),
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -310,7 +327,7 @@ class _PengepulDashboardScreenState extends State<PengepulDashboardScreen> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Estimasi: Rp ${totalPrice.toStringAsFixed(0)}'),
+                Text(_formatCurrency(totalPrice)),
                 if (box.user != null)
                   Text('Penjual: ${box.user!['name']}', 
                     style: TextStyle(fontSize: 12, color: Colors.grey[600]),
@@ -405,7 +422,7 @@ class _PengepulDashboardScreenState extends State<PengepulDashboardScreen> {
                       title: Text(item.name),
                       subtitle: Text('${weight}kg × Rp $price/kg'),
                       trailing: Text(
-                        'Rp ${subtotal.toStringAsFixed(0)}',
+                        _formatCurrency(subtotal),
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -420,7 +437,7 @@ class _PengepulDashboardScreenState extends State<PengepulDashboardScreen> {
                 children: [
                   const Text('Estimasi Total:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   Text(
-                    'Rp ${estimatedPrice.toStringAsFixed(0)}',
+                    _formatCurrency(estimatedPrice),
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
                   ),
                 ],
