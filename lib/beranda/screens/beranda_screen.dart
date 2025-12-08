@@ -16,6 +16,10 @@ import 'package:project_pti/pengaturan/screens/pengaturan_screen.dart';
 import 'package:project_pti/notifikasi/notifications_service.dart';
 import 'package:project_pti/pesanan/screens/waste_sale_list_screen.dart';
 
+// Import Auth Service dan Models
+import 'package:project_pti/core/services/auth_service.dart';
+import 'package:project_pti/core/models/user.dart';
+
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -149,22 +153,56 @@ class _MainScreenState extends State<MainScreen> {
 
 
 // --- KONTEN HALAMAN BERANDA ASLI (DIJADIKAN ISI TAB 0) ---
-// (Tidak ada perubahan di sini kecuali nama pengguna)
-class BerandaContent extends StatelessWidget {
+class BerandaContent extends StatefulWidget {
   const BerandaContent({super.key});
 
   @override
+  State<BerandaContent> createState() => _BerandaContentState();
+}
+
+class _BerandaContentState extends State<BerandaContent> {
+  final _authService = AuthService();
+  User? _currentUser;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    try {
+      final user = await _authService.getCurrentUser();
+      if (mounted) {
+        setState(() {
+          _currentUser = user;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: InfoSaldoWidget(
-              namaPengguna: 'Arza Restu Arjuna',
-              saldo: 145000,
+              namaPengguna: _currentUser?.name ?? 'Pengguna',
+              saldo: _currentUser?.balance ?? 0,
             ),
           ),
 

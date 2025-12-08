@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:project_pti/core/services/auth_service.dart';
+import 'package:project_pti/core/models/user.dart';
 import 'login_screen.dart';
 import '../../beranda/screens/beranda_screen.dart';
+import '../../admin/screens/admin_dashboard_screen.dart';
+import '../../pengepul/screens/pengepul_dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,12 +36,26 @@ class _SplashScreenState extends State<SplashScreen> {
     if (isLoggedIn) {
       // Coba validasi token dengan get user
       try {
-        await _authService.getCurrentUser();
-        // Token valid, ke home
+        final User user = await _authService.getCurrentUser();
+        
+        // Token valid, redirect based on role
         if (mounted) {
+          Widget destination;
+          
+          if (user.isAdmin) {
+            // Admin -> Admin Dashboard
+            destination = const AdminDashboardScreen();
+          } else if (user.isPengepul) {
+            // Pengepul -> Pengepul Dashboard
+            destination = const PengepulDashboardScreen();
+          } else {
+            // Pengguna -> Regular Home Screen
+            destination = const MainScreen();
+          }
+          
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
+            MaterialPageRoute(builder: (context) => destination),
           );
         }
       } catch (e) {

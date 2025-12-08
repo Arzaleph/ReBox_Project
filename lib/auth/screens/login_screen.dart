@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project_pti/core/services/auth_service.dart';
 import 'package:project_pti/core/services/api_service.dart';
+import 'package:project_pti/core/models/user.dart';
 import 'register_screen.dart';
 import '../../beranda/screens/beranda_screen.dart';
+import '../../admin/screens/admin_dashboard_screen.dart';
+import '../../pengepul/screens/pengepul_dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -39,10 +42,23 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (mounted) {
-        // Login berhasil, navigasi ke home
+        // Get user data to check role
+        final User user = await _authService.getCurrentUser();
+        
+        // Navigate based on role
+        Widget destination;
+        if (user.isAdmin) {
+          destination = const AdminDashboardScreen();
+        } else if (user.isPengepul) {
+          destination = const PengepulDashboardScreen();
+        } else {
+          destination = const MainScreen();
+        }
+        
+        // Login berhasil, navigasi ke dashboard sesuai role
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
+          MaterialPageRoute(builder: (context) => destination),
         );
       }
     } on ApiException catch (e) {
